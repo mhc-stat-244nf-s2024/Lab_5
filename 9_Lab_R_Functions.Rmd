@@ -1,0 +1,177 @@
+---
+title: "Lab 5: Writing R Functions with Application to Compartmental Models"
+subtitle: "STAT 244NF: Infectious Disease Modeling"
+author: "YOUR NAME HERE"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Functions in R
+
+We have encountered built-in functions in this class over the course of the semester, ranging from those in base R (did not require you to load a package, like `rep` or `glm`), to those that are specially loaded when we load a specific package (e.g., `ggplot` from the ggplot2 package). Now, we want to write our own functions in R. This is going to keep us from repeating the same code over and over.
+
+### Example 1
+
+If we want to convert a temperature recorded in Celsius to Fahrenheit, we can use the following formula:
+
+$$
+T_\text{Fahrenheit}=T_\text{Celsius}\times \frac{9}{5}+32.
+$$
+Suppose we want to convert 20 degrees Celsius to Fahrenheit. To accomplish this, we could simply write the following:
+
+```{r}
+20*9/5+32
+```
+In many cases, we want to be able to apply a formula multiple times, either within the same document or across many reports. So, we are going to write a function. The general setup for a simple function is:
+
+```
+THIS IS EXAMPLE CODE BUT SHOULD NOT RUN
+function_name <- function(variable){
+  object <- formula(variable)
+  return(object)
+}
+```
+Below is a function that I wrote to convert Celsius to Fahrenheit:
+
+```{r}
+celsius_to_fahrenheit <- function(C_temp){
+  F_temp <- C_temp*9/5+32
+  return(F_temp)
+}
+```
+
+Apply this function to convert 20 degrees Celsius to Fahrenheit.
+
+```{r}
+
+```
+
+The following function is equivalent, although possibly less readable:
+
+```{r}
+celsius_to_fahrenheit <- function(C_temp){
+  C_temp*9/5+32
+}
+```
+
+### Example 2
+
+Write a function that converts a temperature in Fahrenheit to Celsius. Call it `fahrenheit_to_celsius`; call the variable `F_temp`.
+
+```{r}
+
+```
+
+Make sure your function works - run your function for 68 degrees Fahrenheit. You should get 20 degrees Celsius.
+
+```{r}
+
+```
+
+What happens if you remove the `return(C_temp)` from your function. Try it - what do you conclude?
+
+```{r}
+
+```
+
+### Example 3
+
+You can include more than one variable in your function (just like in built-in functions in R). Let's suppose for some reason we want to calculate body mass index (BMI), which is a function of height and weight. The units are $kg/m^2$. The formula for BMI is
+
+$$
+\text{BMI}=\frac{\text{weight}}{(\text{height})^2}.
+$$
+Write a function to calculate BMI; you can call it BMI. This function should have two variables, weight and height. They will be separated by a comma inside the `function()` call.
+
+```{r}
+
+```
+
+Test your function for a weight of 60 kg and height of 1.7 meters.
+
+```{r}
+
+```
+
+What happens if you fail to specify a value for height?
+
+```{r}
+
+```
+
+
+## Writing a function for an SIS model
+
+Remember the differencing equations for an SI model:
+
+$$
+S_{t}=S_{t-1}-\lambda_tS_{t-1}
+$$
+$$
+I_{t}=I_{t-1}+\lambda_tS_{t-1}
+$$
+where $$\lambda_t=1-\exp\left\{-c_e\times\frac{I_{t-1}}{N} \right\}$$ 
+
+and 
+
+$$c_e=\frac{R_0}{D}$$.
+
+If we have an infectious period, $D$, defined, then an SI model is not appropriate. Let's suppose an SIS model is more appropriate (we're considering an infection that confers no immunity after an individual stops being infectious). Then, the differencing equations are:
+
+$$
+S_{t}=S_{t-1}-\lambda_tS_{t-1}+\rho I_{t-1}
+$$
+$$
+I_{t}=I_{t-1}+\lambda_tS_{t-1}-\rho I_{t-1}
+$$
+
+where $\rho=\frac{1}{D}$.
+
+First, Write a for loop to simulate from an SIS model. You can assume the following: 
+
+```{r}
+N <- 1000
+R0 <- 2
+D <- 3 #days
+S0 <- 999
+I0 <- 1
+Time <- 100
+```
+
+```{r}
+
+```
+
+It would be preferable to write a function so we can change the sample size, basic reproductive number, and all the other quantities above by simply specifying different arguments for variables in a function. Here is a rough outline of what you should aim for in your function:
+
+```
+SIS_simulation <- function(N, S0, I0, plus some other things){
+  Create your storage
+  Calculate your c_e
+  
+  Add your for loop in here
+  
+  Return your storage
+}
+```
+```{r}
+
+```
+
+Test out your function by using the same arguments for the variables that you specified when you wrote your for loop. You should get the same result.
+
+```{r}
+
+```
+
+Now that you have written this function, you can test it out for other population sizes, reproductive numbers, infectious period, and time duration. Depending on how much time you have, you can try varying just one of these values, or varying multiple parameters. Plot your results so you can compare them.
+
+```{r}
+
+```
+
+
